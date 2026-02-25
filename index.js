@@ -2,12 +2,34 @@
 // Importing necessary modules from inquirer for creating interactive CLI prompts
 import select, { Separator } from '@inquirer/select';
 import { input, password, confirm } from '@inquirer/prompts';
+// Importing file handling for inputs.json used for zero knowledge operations using node
+import fs from 'fs';
+import path from 'path';
+
+// importing crypto library for hashing secrets
+const { createHmac } = require('node:crypto');
 
 // Handling Ctrl+C (SIGINT) to allow exit
 process.on('SIGINT', () => {
     console.log("\nUser Pressed Ctrl+C, Exiting...");
     process.exit();
 });
+
+// To find the current working directory and joining paths
+const DATA_FILE = path.join(process.cwd(), 'inputs.json')
+
+// To check if inputs.json has already been made or not
+function initializeStorage() {
+    if(!fs.existsSync(DATA_FILE)) {
+        fs.writeFileSync(DATA_FILE, JSON.stringify({}, null, 2));
+    }
+}
+
+// To add new information into inputs.json
+function addInputs(data) {
+    initializeStorage();
+    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+}
 
 // Note: Create more Key Handling functions as needed for other key combinations (e.g., Ctrl+D for EOF)
 
@@ -47,6 +69,8 @@ async function start() {
                 },
             });
 
+            // Note: Hash the secret so that it cannot be accessed easily
+            // For now, it is being sent as it is for fast development
             const secret = await password({
                 message: 'Enter your Secret',
                 required: true,
@@ -57,6 +81,8 @@ async function start() {
                     return true;
                 },
             });
+            // Improvment: Secret is hashed using HMAC with SHA256 algorithm and the wallet address as the message
+            const hashedSecret = createHmac('sha256', secret).update(walletAddress).digest('hex');
 
             const balance = await input({
                 message: 'Enter your balance',
@@ -73,6 +99,18 @@ async function start() {
                     return true;
                 },
             });
+
+            // An object using the information taken from the CLI argument
+            const userInput = {
+                walletAddress,
+                hashedSecret,
+                balance: Number(balance)
+            }
+
+            // Add the input in `AddInputs` function
+            // In a real environment, this should be pushed into a database
+            addInputs(userInput)
+
             // Note: Add DB integration here to save the new user details (walletAddress, secret, balance) to a database or file (if needed)
 
             console.log('\nNew user registered successfully.');
