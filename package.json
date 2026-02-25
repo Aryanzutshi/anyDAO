@@ -1,0 +1,34 @@
+{
+  "name": "anydao",
+  "version": "1.0.0",
+  "description": "Dummy implementation of an anonymous DAO",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aryanzutshi/anyDAO.git"
+  },
+  "keywords": [
+    "DAO"
+  ],
+  "author": "Aryan Zutshi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Aryanzutshi/anyDAO/issues"
+  },
+  "homepage": "https://github.com/Aryanzutshi/anyDAO#readme",
+  "dependencies": {
+    "@inquirer/input": "^5.0.8",
+    "@inquirer/prompts": "^8.3.0",
+    "circomlib": "^2.0.5",
+    "snarkjs": "^0.7.6",
+    "typescript": "^5.9.3"
+  }
+}
